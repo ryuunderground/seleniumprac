@@ -30,7 +30,7 @@ id_input = facebook_login_form.find_element(By.ID,"email")
 pw_input = facebook_login_form.find_element(By.ID, "pass")
 facebook_login_btn = facebook_login_form.find_element(By.ID, "loginbutton")
 id_input.send_keys(FACEBOOK_ID)
-pw_input.send_keys(FACEBOOK_PW)
+pw_input.send_keys(input("inset password"))
 facebook_login_btn.click()
 
 time.sleep(500)
