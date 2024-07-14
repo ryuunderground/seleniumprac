@@ -5,11 +5,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 import os
-import time
 
-# 브라우저 꺼짐 방지 옵션
+# Headless
 chrome_options = Options()
-chrome_options.add_experimental_option("detach", True)
+chrome_options.add_argument("--headless")
 
 class GoogleKeywordScreenshooter:
     def __init__(self, keyword, screenshots_dir):
@@ -90,6 +89,6 @@ class GoogleKeywordScreenshooter:
         #브라우저 끄기
         self.browser.quit()
 
-spatula = GoogleKeywordScreenshooter("Auro Kronii", "screenshots")
+spatula = GoogleKeywordScreenshooter("Ceres Fauna", "screenshots")
 spatula.search_and_screen_capture()
 spatula.execute()
