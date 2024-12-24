@@ -21,13 +21,22 @@ class BigKim:
         self.browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),options=chrome_options)
         # 검색 키워드
         self.keyword = keyword
-    
+    # 필요없는 요소 제거
+    def useless_element_remover(self, shitty_elements):
+        self.browser.execute_script(
+            """
+            const shitty = arguments[0];
+            shitty.parentElement.removeChild(shitty);
+            """,
+            shitty_elements
+        )
+    # 논문 리스트 추출
     def get_journal_list(self):
         # 대학원 논문 페이지 접속
         self.browser.get("https://bigkim.cau.ac.kr/논문/")
         # 년도 별 섹션 추출
         journal_list_sections = WebDriverWait(self.browser, 3).until(EC.presence_of_all_elements_located((By.TAG_NAME, "section")))
-        
+        # 년도 별 섹션 돌면서 논문 리스트 추출
         for section in journal_list_sections:
             lists = section.find_elements(By.TAG_NAME, "li")
             for list in lists:
@@ -35,15 +44,7 @@ class BigKim:
                 if self.keyword in journal_info:
                     print(journal_info)
                 else:
-                    shitty_elements = list
-                    # 필요없는 요소 제거
-                    self.browser.execute_script(
-                        """
-                        const shitty = arguments[0];
-                        shitty.parentElement.removeChild(shitty);
-                        """,
-                        shitty_elements
-                    )
+                    self.useless_element_remover(list)
 
 virus_results = BigKim("Virus")
 virus_results.get_journal_list()
