@@ -10,34 +10,40 @@ from selenium.webdriver.support.ui import WebDriverWait
 # 브라우저 꺼짐 방지 옵션
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
-# 기본 브라우저
-"""browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))"""
-# 꺼짐 설정 끈 브라우저
-browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),options=chrome_options)
-print("브라우저 초기화 완료")
 
 
-# 검색 키워드
-KEYWORD = "PRRSV"
-# 대학원 논문 페이지 접속
-browser.get("https://bigkim.cau.ac.kr/논문/")
+class BigKim:
 
-# 년도 별 섹션 추출
-journal_list_sections = WebDriverWait(browser, 3).until(EC.presence_of_all_elements_located((By.TAG_NAME, "section")))
+    def __init__(self, keyword):
+        # 기본 브라우저
+        # browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        # 꺼짐 설정 끈 브라우저
+        self.browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),options=chrome_options)
+        # 검색 키워드
+        self.keyword = keyword
+    
+    def get_journal_list(self):
+        # 대학원 논문 페이지 접속
+        self.browser.get("https://bigkim.cau.ac.kr/논문/")
+        # 년도 별 섹션 추출
+        journal_list_sections = WebDriverWait(self.browser, 3).until(EC.presence_of_all_elements_located((By.TAG_NAME, "section")))
+        
+        for section in journal_list_sections:
+            lists = section.find_elements(By.TAG_NAME, "li")
+            for list in lists:
+                journal_info = list.text
+                if self.keyword in journal_info:
+                    print(journal_info)
+                else:
+                    shitty_elements = list
+                    # 필요없는 요소 제거
+                    self.browser.execute_script(
+                        """
+                        const shitty = arguments[0];
+                        shitty.parentElement.removeChild(shitty);
+                        """,
+                        shitty_elements
+                    )
 
-for section in journal_list_sections:
-       lists = section.find_elements(By.TAG_NAME, "li")
-       for list in lists:
-           journal_info = list.text
-           if KEYWORD in journal_info:
-               print(journal_info)
-           else:
-            shitty_elements = list
-               # 필요없는 요소 제거
-            browser.execute_script(
-                """
-                const shitty = arguments[0];
-                shitty.parentElement.removeChild(shitty);
-                """,
-                shitty_elements
-            )
+virus_results = BigKim("Virus")
+virus_results.get_journal_list()
