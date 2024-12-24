@@ -70,6 +70,6 @@ class nature_miner:
         self.article_extractor(nature)
         self.save_file()
 
-transcriptome_tester = nature_miner("transcriptome")
+transcriptome_tester = nature_miner("Deep learning")
 transcriptome_tester.start()
 
