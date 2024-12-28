@@ -11,7 +11,7 @@ import csv
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
 
-class nature_miner:
+class science_miner:
     def __init__(self, search_key, cycle):
         self.search_key = search_key
         self.cycle = int(cycle)
@@ -32,19 +32,20 @@ class nature_miner:
         try:
             # 제목
             try:
-                article_title = self.browser.find_element(By.CLASS_NAME, "c-article-title")
+                article_header = self.browser.find_element(By.TAG_NAME, "header")
+                article_title = article_header.find_element(By.TAG_NAME, "h1")
                 article_data['title'] = article_title.text
             except:
                 print("Could not extract title")
             
             # 지수
             try:
-                index_list = self.browser.find_element(By.CLASS_NAME,"c-article-metrics-bar.u-list-reset")
-                indexs = index_list.find_elements(By.TAG_NAME, "li")
-                indexs = indexs[:-1]
+                index_container = self.browser.find_element(By.CLASS_NAME,"toolbar-metric-container.data-source")
+                index_menu = index_container.find_element(By.CLASS_NAME, "metrics-menu.toolbar-metric")
+                indexs_anchor = index_menu.find_element(By.TAG_NAME, "a")
+                index = indexs_anchor.text
                 index_array = []
-                for index in indexs:
-                    index_array.append(index.text)
+                index_array.append(index)
                 if index_array:  # Only update if we found metrics
                     article_data['metrics'] = index_array
             except:
@@ -52,8 +53,8 @@ class nature_miner:
                 
             # 초록
             try:
-                abstract = self.browser.find_element(By.ID, "Abs1-content")
-                article_data['abstract'] = abstract.find_element(By.TAG_NAME, "p").text
+                abstract = self.browser.find_element(By.ID, "abstract")
+                article_data['abstract'] = abstract.find_element(By.TAG_NAME, "div").text
             except:
                 print("Could not extract abstract")
 
@@ -65,7 +66,7 @@ class nature_miner:
             
             # 다운로드
             try:
-                download = self.browser.find_element(By.CLASS_NAME, "c-pdf-download.u-clear-both.js-pdf-download")
+                download = self.browser.find_element(By.CLASS_NAME, "info-panel__formats info-panel__item")
                 article_data['pdf_link'] = download.find_element(By.TAG_NAME, "a").get_attribute("href")
             except:
                 print("Could not extract PDF link")
@@ -90,18 +91,18 @@ class nature_miner:
         try:
             self.browser.get(url)
             articles = WebDriverWait(self.browser, 3).until(
-                EC.presence_of_all_elements_located((By.CLASS_NAME, "app-article-list-row__item"))
+                EC.presence_of_all_elements_located((By.CLASS_NAME, "card.pb-3.mb-4.border-bottom"))
             )
-            cookies = self.browser.find_element(By.CLASS_NAME, "cc-button.cc-button--secondary.cc-button--contrast.cc-banner__button.cc-banner__button-accept")
-            cookies.click()
 
             cycle = int(self.cycle)
             start_idx = 20 * (cycle - 1)
             end_idx = 20 * cycle
-            
+
             for article in articles[start_idx:end_idx]:
                 article_anchor = article.find_element(By.TAG_NAME, "a")
-                ActionChains(self.browser).key_down(Keys.COMMAND).click(article_anchor).perform()
+                article_url = article_anchor.get_attribute("href")
+                self.browser.execute_script(f'window.open("{article_url}", "_blank");')
+
             # 각 탭 돌면서 추출
             windows = self.browser.window_handles[1:]
             for window in windows:
@@ -117,10 +118,10 @@ class nature_miner:
 
     def start(self):
         self.clear_results()  # Clear any previous results
-        nature = f"https://www.nature.com/search?q={self.search_key}&article_type=research%2C+reviews%2C+research-highlights&order=relevance"
-        self.article_extractor(nature)
+        science = f"https://www.science.org/action/doSearch?AllField={self.search_key}"
+        self.article_extractor(science)
         return self.get_results()  # Return results instead of saving to CSV
 
-"""transcriptome_tester = nature_miner("transcriptome")
-transcriptome_tester.start()"""
+transcriptome_tester = science_miner("transcriptome", 1)
+transcriptome_tester.start()
 
