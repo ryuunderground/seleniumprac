@@ -46,5 +46,5 @@ class BigKim:
                 else:
                     self.useless_element_remover(list)
 
-virus_results = BigKim("Virus")
+virus_results = BigKim("PRRSV")
 virus_results.get_journal_list()
