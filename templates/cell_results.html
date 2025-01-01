@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cell Search Results</title>
+  </head>
+  <body>
+    <h1>Search Results for: {{ keyword }}</h1>
+    {% for article in results %}
+    <div class="article">
+      <h2>{{ article.title }}</h2>
+      <div class="metrics">
+        <h3>Metrics:</h3>
+        <ul>
+          {% for metric in article.metrics %}
+          <li>{{ metric }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="abstract">
+        <h3>Abstract:</h3>
+        <p>{{ article.abstract }}</p>
+      </div>
+    </div>
+    <hr />
+    {% endfor %}
+  </body>
+</html>

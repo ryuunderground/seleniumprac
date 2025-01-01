@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from nature import nature_miner
 from science import science_miner
+from cell import cell_miner
 app = Flask("Journals")
 
 @app.route("/")
@@ -30,5 +31,17 @@ def science_results():
     miner = science_miner(KEYWORD, CYCLE)
     RESULTS = miner.start()
     return render_template("science_results.html", keyword=KEYWORD, results=RESULTS)
+
+@app.route("/cell")   
+def cell():
+    return render_template("cell.html")
+
+@app.route("/cell_results")   
+def cell_results():
+    KEYWORD = request.args.get("keyword")
+    CYCLE = request.args.get("cycle")
+    miner = cell_miner(KEYWORD, CYCLE)
+    RESULTS = miner.start()
+    return render_template("cell_results.html", keyword=KEYWORD, results=RESULTS)
 
 app.run("0.0.0.0", port=8000)
