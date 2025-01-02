@@ -141,6 +141,6 @@ class science_miner:
         self.article_extractor(science)
         return self.get_results()  # Return results instead of saving to CSV
 
-transcriptome_tester = science_miner("virus", 1)
-transcriptome_tester.start()
+"""transcriptome_tester = science_miner("virus", 1)
+transcriptome_tester.start()"""
 

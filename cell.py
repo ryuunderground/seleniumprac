@@ -141,6 +141,6 @@ class cell_miner:
         self.article_extractor(cell)
         return self.get_results()  # Return results instead of saving to CSV
 
-transcriptome_tester = cell_miner("transcriptome", 1)
-transcriptome_tester.start()
+"""transcriptome_tester = cell_miner("transcriptome", 1)
+transcriptome_tester.start()"""
 

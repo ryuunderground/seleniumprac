@@ -117,7 +117,7 @@ class nature_miner:
 
     def start(self):
         self.clear_results()  # Clear any previous results
-        nature = f"https://www.nature.com/search?q={self.search_key}&article_type=research%2C+reviews%2C+research-highlights&order=relevance"
+        nature = f"https://www.nature.com/search?q={self.search_key}&article_type=reviews&order=relevance"
         self.article_extractor(nature)
         return self.get_results()  # Return results instead of saving to CSV
 
