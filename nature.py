@@ -60,6 +60,7 @@ class nature_miner:
             # 링크
             try:
                 article_data['link'] = self.browser.current_url
+                print(article_data["link"])
             except:
                 print("Could not extract link")
             
